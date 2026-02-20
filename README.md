@@ -1,108 +1,203 @@
-🌡️ Projeto DHT_11 – Leitura de Umidade e Temperatura via Serial
-📌 Descrição
+# 🌡️ Sistema de Monitoramento com DHT11, LCD e Python
 
-Este projeto tem como objetivo realizar a leitura de dados de um sensor DHT11 (umidade e temperatura) conectado a um Arduino, enviando essas informações pela porta serial para um script em Python, onde os dados são processados e exibidos juntamente com a data e hora da leitura.
+## 📌 Visão Geral
 
-O projeto é ideal para estudos de:
+Este projeto implementa um **sistema completo de monitoramento ambiental**, utilizando o sensor **DHT11** para leitura de **temperatura**, **umidade** e cálculo de **índice de calor**, com três camadas principais:
 
-Comunicação Serial
+1. **Arduino** – Aquisição dos dados, menu em LCD 16x2 e controle de hardware
+2. **Comunicação Serial** – Envio contínuo dos dados formatados
+3. **Python** – Leitura da Serial, tratamento dos dados e visualização gráfica em tempo real
 
-Integração Arduino + Python
+O sistema foi desenvolvido com foco em **aprendizado**, **organização de código** e **integração entre hardware e software**.
 
-Sensores de temperatura e umidade
+---
 
-Monitoramento ambiental básico
+## 🧰 Tecnologias Utilizadas
 
-🧰 Tecnologias Utilizadas
+### Hardware
 
-Arduino (qualquer modelo compatível)
+* Arduino (Uno, Nano ou compatível)
+* Sensor **DHT11** (Temperatura e Umidade)
+* Display **LCD 16x2 com interface I2C**
+* Botões de navegação (UP, DOWN, ENTER, BACK)
+* LEDs
+* Buzzer
 
-Sensor DHT11
+### Software
 
-Python 3
+* Arduino IDE
+* Python 3
+* Bibliotecas Arduino:
 
-Biblioteca pySerial
+  * `LiquidCrystal_I2C`
+  * `Wire`
+  * `DHT`
+* Bibliotecas Python:
 
-Biblioteca datetime
+  * `pyserial`
+  * `matplotlib`
+  * `collections (deque)`
+  * `re`
 
-🔌 Esquema de Funcionamento
+---
 
-O DHT11 coleta os dados de:
+## 📁 Estrutura do Projeto
 
-Umidade (%)
-
-Temperatura (°C)
-
-Índice de calor (°C e °F)
-
-O Arduino envia esses dados formatados via Serial.
-
-O Python:
-
-Lê os dados da porta serial
-
-Trata a string recebida
-
-Extrai os valores
-
-Exibe os dados junto com o horário da leitura
-
-📁 Estrutura do Projeto
-DHT_11/
+```bash
+Projeto-DHT11/
 │
-├── dht11_serial.py     # Script Python para leitura da Serial
-├── README.md           # Documentação do projeto
-└── arduino/
-    └── dht11.ino       # Código Arduino para o sensor DHT11
-⚙️ Pré-requisitos
+├── arduino/
+│   └── menu_lcd_dht11.ino      # Código Arduino (LCD + Menu + Sensor)
+│
+├── python/
+│   └── monitor_serial_plot.py  # Leitura serial e gráficos em tempo real
+│
+└── README.md                   # Documentação do projeto
+```
 
-Antes de executar o projeto, certifique-se de ter:
+---
 
-Python 3 instalado
+## ⚙️ Funcionamento Geral do Sistema
 
-Arduino IDE instalada
+### 🔹 Arduino
 
-Biblioteca pySerial instalada no Python
+* Lê os dados do sensor **DHT11**
+* Exibe informações em um **menu interativo no LCD**
+* Permite navegação usando botões físicos
+* Controla LEDs e buzzer
+* Envia dados formatados via **Serial** em intervalos regulares
 
-Instalação da biblioteca pySerial:
+### 🔹 Comunicação Serial
 
-pip install pyserial
-▶️ Como Executar
+* Dados enviados no formato texto
+* Exemplo de saída:
 
-Conecte o sensor DHT11 ao Arduino.
+```text
+| Umidade:  55.2 % | Temperatura:  27.3 °C | Heat Index (F):  80.1 °F | Heat Index (C):  26.7 °C |
+```
 
-Faça o upload do código Arduino (dht11.ino) para a placa.
+### 🔹 Python
 
-Conecte o Arduino ao computador via USB.
+* Lê os dados da porta serial
+* Usa **expressões regulares** para extrair valores numéricos
+* Armazena os últimos dados em filas (deque)
+* Plota gráficos em tempo real:
 
-Verifique a porta serial utilizada (ex: COM5 no Windows).
+  * Temperatura
+  * Umidade
+  * Nível de gás
 
-No código Python, ajuste a porta se necessário:
+---
 
-ser = serial.Serial('COM5', 9600)
+## 📟 Menu no LCD (Arduino)
 
-Execute o script Python:
+O sistema possui um menu navegável com botões:
 
-python dht11_serial.py
-📤 Exemplo de Saída no Terminal
-Humidity: 55%	Temperature: 27 °C	Heat Index: 80 °F	Heat Index: 26 °C
-Hora atual: 2024-06-04 15:32:10
-🧠 Observações
+* **UP / DOWN** → Navegação
+* **ENTER** → Selecionar opção
+* **BACK** → Retorno (estrutura preparada)
 
-A taxa de transmissão (baud rate) deve ser a mesma no Arduino e no Python (9600).
+### Telas disponíveis:
 
-O script utiliza try/except para permitir interrupção segura com Ctrl + C.
+1. Monitoramento (exibe temperatura e umidade)
+2. Controle (aciona LED)
+3. Control °C
+4. Modo
 
-A conexão serial é fechada corretamente ao encerrar o programa.
+O LCD também utiliza **caracteres personalizados**, como:
 
-✍️ Autor
+* Grau (°)
+* Gota (umidade)
+* Floco de neve
 
-Tiago Modesto (Labigó)
-📅 Data: 04/06/2024
+---
 
-Projeto desenvolvido para fins educacionais e aprendizado em eletrônica e programação.
+## 📊 Gráficos em Tempo Real (Python)
 
-📜 Licença
+O script Python utiliza `matplotlib.animation.FuncAnimation` para atualizar os gráficos automaticamente.
 
-Este projeto é de uso livre para fins educacionais.
-Sinta-se à vontade para estudar, modificar e compartilhar.
+Características:
+
+* Atualização a cada 1 segundo
+* Histórico limitado (janela deslizante)
+* Tratamento de dados inválidos
+* Execução contínua até interrupção manual
+
+---
+
+## ▶️ Como Executar
+
+### 1️⃣ Arduino
+
+1. Conecte o sensor DHT11 ao pino definido no código
+2. Conecte o LCD via I2C
+3. Ajuste os pinos dos botões, LEDs e buzzer se necessário
+4. Faça o upload do arquivo `.ino`
+5. Abra o Monitor Serial (9600 baud) para testes
+
+### 2️⃣ Python
+
+Instale as dependências:
+
+```bash
+pip install pyserial matplotlib
+```
+
+Configure a porta serial no código:
+
+```python
+arduino_port = 'COM3'
+baud_rate = 19200
+```
+
+Execute:
+
+```bash
+python monitor_serial_plot.py
+```
+
+---
+
+## ⚠️ Observações Importantes
+
+* A **porta serial** deve ser a mesma no Arduino e no Python
+* O **baud rate** precisa coincidir nos dois códigos
+* Feche o **Monitor Serial da IDE Arduino** antes de rodar o Python
+* O uso de `millis()` evita travamentos por `delay()`
+
+---
+
+## 🎯 Objetivos Educacionais
+
+* Integração Arduino + Python
+* Comunicação Serial
+* Leitura de sensores
+* Criação de menus em LCD
+* Visualização gráfica em tempo real
+* Organização e boas práticas de código
+
+---
+
+## ✍️ Autor
+
+**Tiago Modesto de Sousa Moura**
+📅 Julho de 2024
+
+Projeto desenvolvido para fins educacionais, experimentação e aprendizado em sistemas embarcados.
+
+---
+
+## 📜 Licença
+
+Projeto de uso livre para fins educacionais.
+Sinta-se à vontade para estudar, modificar e expandir.
+
+---
+
+## 🚀 Possíveis Evoluções
+
+* Refatoração para máquina de estados
+* Salvamento de dados em arquivo (CSV)
+* Dashboard com interface gráfica (PyQt)
+* Integração com Wi-Fi / IoT
+* Alarmes por limite de temperatura
