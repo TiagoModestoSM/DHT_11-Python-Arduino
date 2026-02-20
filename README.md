@@ -44,13 +44,13 @@ O sistema foi desenvolvido com foco em **aprendizado**, **organização de códi
 ## 📁 Estrutura do Projeto
 
 ```bash
-Projeto-DHT11/
+DHT_11-Python-Arduino/
 │
-├── arduino/
-│   └── menu_lcd_dht11.ino      # Código Arduino (LCD + Menu + Sensor)
-│
-├── python/
-│   └── monitor_serial_plot.py  # Leitura serial e gráficos em tempo real
+├── DHT11_Pyduino/
+│   └── DHT11_LCD
+|       └── DTH11_LCD.ino # Código Arduino (LCD + Menu + Sensor)
+|   └── DHT_PYDUINO
+|       └── DHT.py  # Leitura serial e gráficos em tempo real
 │
 └── README.md                   # Documentação do projeto
 ```
